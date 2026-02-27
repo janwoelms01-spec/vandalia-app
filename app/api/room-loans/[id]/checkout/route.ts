@@ -1,14 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, copies_state, room_loans_status } from "@prisma/client";
 import { requireApiPermission } from "@/lib/api/requireApiPermissions";
 
 const prisma = new PrismaClient();
 
-export async function POST(_: Request, { params }: { params: { id: string } }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+){
+  const {id} = await params;
   const perm = await requireApiPermission("ROOM_LOANS_MANAGE");
   if (!perm.ok) return perm.response;
 
-  const loanId = params.id;
+  const loanId = id;
 
   try {
     const result = await prisma.$transaction(async (tx) => {
