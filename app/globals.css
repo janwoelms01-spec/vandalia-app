@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: black;
+}
+.nav-item:hover{
+  text-decoration: underline;
+}
+.title-container{
+  display:flex;
+  flex-direction: column;
+  width: 200px;
+}
+/* nav styles were defined here but are now handled by Tailwind in the Links component */
+/* nav{
+  display: flex;
+  gap: 16px;
+  text-decoration: none;
+  color:black;
+} */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+.title{
+  font-size: 24px;
+  font-weight: bold;;
+}
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* removed fixed height to allow dynamic resizing when mobile menu opens */
+}
+

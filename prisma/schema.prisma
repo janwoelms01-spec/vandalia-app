@@ -1,0 +1,299 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id                   String            @id @db.Char(25)
+  username             String            @unique(map: "uq_users_username") @db.VarChar(100)
+  role                 users_role        @default(MEMBER)
+  password_hash        String            @db.VarChar(255)
+  is_active            Boolean           @default(true)
+  created_at           DateTime          @default(now()) @db.DateTime(0)
+  updated_at           DateTime          @default(now()) @db.DateTime(0)
+  must_change_password Boolean           @default(true)
+  password_changed_at  DateTime?         @db.DateTime(0)
+  assets_sessions      assets_sessions[]
+  issue_reports        issue_reports[]
+  room_loans           room_loans[]
+}
+
+model categories {
+  id            String          @id @db.Char(25)
+  name          String          @unique(map: "name") @db.VarChar(120)
+  code          String          @unique(map: "code") @db.VarChar(10)
+  sort_order    Int             @default(0)
+  is_active     Boolean         @default(true)
+  created_at    DateTime        @default(now()) @db.DateTime(0)
+  updated_at    DateTime        @default(now()) @db.DateTime(0)
+  code_counters code_counters[]
+  subcategories subcategories[]
+  titles        titles[]
+}
+
+model code_counters {
+  id             String        @id @db.Char(25)
+  category_id    String        @db.Char(25)
+  subcategory_id String        @db.Char(25)
+  next_number    Int           @default(1)
+  updated_at     DateTime      @default(now()) @db.DateTime(0)
+  categories     categories    @relation(fields: [category_id], references: [id], map: "fk_counters_category")
+  subcategories  subcategories @relation(fields: [subcategory_id], references: [id], map: "fk_counters_subcategory")
+
+  @@unique([category_id, subcategory_id], map: "uq_counters_cat_sub")
+  @@index([category_id], map: "idx_counters_category")
+  @@index([subcategory_id], map: "idx_counters_subcategory")
+}
+
+model subcategories {
+  id            String          @id @db.Char(25)
+  category_id   String          @db.Char(25)
+  name          String          @db.VarChar(120)
+  code          String          @db.VarChar(10)
+  sort_order    Int             @default(0)
+  is_active     Boolean         @default(true)
+  created_at    DateTime        @default(now()) @db.DateTime(0)
+  updated_at    DateTime        @default(now()) @db.DateTime(0)
+  code_counters code_counters[]
+  categories    categories      @relation(fields: [category_id], references: [id], map: "fk_subcategories_category")
+  titles        titles[]
+
+  @@unique([category_id, code], map: "uq_subcategories_cat_code")
+  @@unique([category_id, name], map: "uq_subcategories_cat_name")
+  @@index([category_id], map: "idx_subcategories_category")
+}
+
+model copies {
+  id            String            @id @db.Char(25)
+  title_id      String            @db.Char(25)
+  copy_code     String            @unique(map: "uq_copies_copy_code") @db.VarChar(40)
+  home_location String            @db.VarChar(255)
+  presence_only Boolean           @default(false)
+  stock_type    copies_stock_type @default(PERMANENT)
+  loan_owner    String?           @db.VarChar(255)
+  loan_until    DateTime?         @db.Date
+  state         copies_state      @default(IN_LIBARY)
+  note          String?           @db.VarChar(512)
+  is_active     Boolean           @default(true)
+  created_at    DateTime          @default(now()) @db.DateTime(0)
+  updated_at    DateTime          @default(now()) @db.DateTime(0)
+  titles        titles            @relation(fields: [title_id], references: [id], map: "fk_copies_title")
+  issue_reports issue_reports[]
+  room_loans    room_loans[]
+
+  @@index([state], map: "idx_copies_state")
+  @@index([title_id], map: "idx_copies_title")
+}
+
+model room_loans {
+  id           String            @id @db.Char(25)
+  copy_id      String            @db.Char(25)
+  user_id      String            @db.Char(25)
+  requested_at DateTime          @default(now()) @db.DateTime(0)
+  approved_at  DateTime?         @db.DateTime(0)
+  due_at       DateTime          @db.DateTime(0)
+  returned_at  DateTime?         @db.DateTime(0)
+  status       room_loans_status @default(REQUESTED)
+  note         String?           @db.VarChar(512)
+  created_at   DateTime          @default(now()) @db.DateTime(0)
+  updated_at   DateTime          @default(now()) @db.DateTime(0)
+  copies       copies            @relation(fields: [copy_id], references: [id], map: "fk_roomloans_copy")
+  users        users             @relation(fields: [user_id], references: [id], map: "fk_roomloans_users")
+
+  @@index([copy_id], map: "idx_roomloans_copy")
+  @@index([due_at], map: "idx_roomloans_due")
+  @@index([status], map: "idx_roomloans_status")
+  @@index([user_id], map: "idx_roomloans_user")
+}
+
+model titles {
+  id               String                 @id @db.Char(25)
+  media_type       titles_media_type
+  identifier_type  titles_identifier_type @default(NONE)
+  identifier_value String?                @db.VarChar(32)
+  title            String                 @db.VarChar(255)
+  authors          String?                @db.VarChar(512)
+  publisher        String?                @db.VarChar(255)
+  published_at     String?                @db.VarChar(32)
+  language         String?                @db.VarChar(16)
+  cover_url        String?                @db.VarChar(512)
+  source           titles_source          @default(MANUAL)
+  category_id      String                 @db.Char(25)
+  subcategory_id   String                 @db.Char(25)
+  short_code       String                 @unique(map: "uq_titles_short_code") @db.VarChar(32)
+  is_active        Boolean                @default(true)
+  created_at       DateTime               @default(now()) @db.DateTime(0)
+  updated_at       DateTime               @default(now()) @db.DateTime(0)
+  copies           copies[]
+  categories       categories             @relation(fields: [category_id], references: [id], map: "fk_titles_category")
+  subcategories    subcategories          @relation(fields: [subcategory_id], references: [id], map: "fk_titles_subcategory")
+
+  @@unique([identifier_type, identifier_value], map: "uq_titles_identifier")
+  @@index([category_id], map: "idx_titles_category")
+  @@index([subcategory_id], map: "idx_titles_subcategory")
+}
+
+model asset_categories {
+  id                  String                @id @db.Char(25)
+  name                String                @unique(map: "uq_asset_categories_name") @db.VarChar(120)
+  sort_order          Int                   @default(0)
+  is_active           Boolean               @default(true)
+  created_at          DateTime              @default(now()) @db.DateTime(0)
+  updated_at          DateTime              @default(now()) @db.DateTime(0)
+  asset_subcategories asset_subcategories[]
+  assets              assets[]
+}
+
+model asset_subcategories {
+  id                String           @id @db.Char(25)
+  asset_category_id String           @db.Char(25)
+  name              String           @db.VarChar(120)
+  sort_order        Int              @default(0)
+  is_active         Boolean          @default(true)
+  created_at        DateTime         @default(now()) @db.DateTime(0)
+  updated_at        DateTime         @default(now()) @db.DateTime(0)
+  asset_categories  asset_categories @relation(fields: [asset_category_id], references: [id], map: "fk_asset_subcategories_category")
+  assets            assets[]
+
+  @@unique([asset_category_id, name], map: "uq_asset_subcat_name")
+  @@index([asset_category_id], map: "idx_asset_subcat_category")
+}
+
+model assets {
+  id                    String               @id @db.Char(25)
+  name                  String               @db.VarChar(255)
+  assets_category_id    String               @db.Char(25)
+  assets_subcategory_id String?              @db.Char(25)
+  location_text         String?              @db.VarChar(255)
+  quantity_total        Int                  @default(1)
+  quantaty_ok           Int
+  quantaty_damaged      Int
+  quantaty_missing      Int
+  note                  String?              @db.VarChar(512)
+  is_active             Boolean              @default(true)
+  created_at            DateTime             @default(now()) @db.DateTime(0)
+  updated_at            DateTime             @default(now()) @db.DateTime(0)
+  asset_categories      asset_categories     @relation(fields: [assets_category_id], references: [id], map: "fk_assets_categories")
+  asset_subcategories   asset_subcategories? @relation(fields: [assets_subcategory_id], references: [id], onDelete: Restrict, map: "fk_assets_subcategories")
+  assets_checks         assets_checks[]
+  issue_reports         issue_reports[]
+
+  @@index([assets_category_id], map: "idx_assets_category")
+  @@index([assets_subcategory_id], map: "idx_assets_subcategory")
+}
+
+model assets_checks {
+  id               String          @id @db.Char(25)
+  session_id       String          @db.Char(25)
+  asset_id         String          @db.Char(25)
+  quantity_found   Int             @default(0)
+  quantity_damaged Int             @default(0)
+  quantaty_missing Int             @default(0)
+  note             String?         @db.VarChar(512)
+  created_at       DateTime        @default(now()) @db.DateTime(0)
+  assets           assets          @relation(fields: [asset_id], references: [id], map: "fk_asset_checks_asset")
+  assets_sessions  assets_sessions @relation(fields: [session_id], references: [id], map: "fk_asset_checks_session")
+
+  @@unique([session_id, asset_id], map: "uq_asset_checks_session_asset")
+  @@index([asset_id], map: "idx_asset_checks_asset")
+  @@index([session_id], map: "idx_asset_checks_session")
+}
+
+model assets_sessions {
+  id            String          @id @db.Char(25)
+  name          String          @db.VarChar(255)
+  scope         String?         @db.VarChar(255)
+  note          String?         @db.VarChar(512)
+  created_by    String          @db.Char(25)
+  created_at    DateTime        @default(now()) @db.DateTime(0)
+  assets_checks assets_checks[]
+  users         users           @relation(fields: [created_by], references: [id], map: "fk_asset_session_user")
+
+  @@index([created_by], map: "fk_asset_session_user")
+  @@index([created_at], map: "idx_asset_sessions_created_at")
+  @@index([scope], map: "idx_assets_sessions_scope")
+}
+
+model issue_reports {
+  id          String                 @id @db.Char(25)
+  reported_by String                 @db.Char(25)
+  copy_id     String?                @db.Char(25)
+  asset_id    String?                @db.Char(25)
+  title       String                 @db.VarChar(255)
+  description String                 @db.Text
+  severity    issue_reports_severity @default(MEDIUM)
+  status      issue_reports_status   @default(OPEN)
+  created_at  DateTime               @default(now()) @db.DateTime(0)
+  updated_at  DateTime               @default(now()) @db.DateTime(0)
+  resolved_at DateTime?              @db.DateTime(0)
+  assets      assets?                @relation(fields: [asset_id], references: [id], onDelete: Restrict, map: "fk_issues_asset")
+  copies      copies?                @relation(fields: [copy_id], references: [id], onDelete: Restrict, map: "fk_issues_copy")
+  users       users                  @relation(fields: [reported_by], references: [id], map: "fk_issues_user")
+
+  @@index([asset_id], map: "idx_isssues_asset")
+  @@index([copy_id], map: "idx_issues_copy")
+  @@index([status], map: "idx_issues_status")
+  @@index([reported_by], map: "idx_issues_user")
+}
+
+enum users_role {
+  ADMIN
+  SCRIPTOR
+  ARCHIVAR
+  MEMBER
+}
+
+enum titles_media_type {
+  BOOK
+  JOURNAL
+}
+
+enum titles_identifier_type {
+  ISBN
+  ISSN
+  NONE
+}
+
+enum copies_stock_type {
+  PERMANENT
+  LOAN
+}
+
+enum room_loans_status {
+  REQUESTED
+  APPROVED
+  REJECTED
+  OUT
+  RETURNED
+}
+
+enum copies_state {
+  IN_LIBARY
+  ON_ROOM_LOAN
+  MISSING
+  DAMAGED
+}
+
+enum titles_source {
+  OPENLIB
+  GOOGLE
+  MANUAL
+}
+
+enum issue_reports_severity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum issue_reports_status {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
