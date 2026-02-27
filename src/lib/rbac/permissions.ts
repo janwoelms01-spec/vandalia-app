@@ -26,6 +26,8 @@ export type Permission =
     | "BACKUP_READ"
     | "BACKUP_CREATE"
     | "BACKUP_RESTORE"
+    | "FAMILY_TREE_WRITE"
+    | "FAMILY_TREE_READ"
 ;
 const Member_OPERATIONS: Permission[]=[
     // Bibliothek Rechte
@@ -42,6 +44,8 @@ const Member_OPERATIONS: Permission[]=[
 
     //Inventory Rechte
     "INVENTORY_READ",
+
+    "FAMILY_TREE_READ"
     
 ];
 
@@ -84,6 +88,10 @@ const BACKUP_OPERATIONS: Permission[] = [
     "BACKUP_RESTORE"
 ]
 
+const FAMILY_TREE_OPERATIONS: Permission[] = [
+    "FAMILY_TREE_WRITE",
+];
+
     const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
         ADMIN: [...Member_OPERATIONS, ...OPERATIONS, ...USER_OPERATION, ...BACKUP_OPERATIONS
         ],
@@ -91,6 +99,7 @@ const BACKUP_OPERATIONS: Permission[] = [
         ],
         ARCHIVAR: [...Member_OPERATIONS, ...OPERATIONS],
         MEMBER: [...Member_OPERATIONS],
+        GENEALOGISTAR: [...Member_OPERATIONS,]
 
     };
 
