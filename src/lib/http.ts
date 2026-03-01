@@ -1,17 +1,12 @@
 // src/lib/http.ts
-import { headers } from "next/headers";
+export function getBaseUrl() {
+  // Browser: relative requests (gleiches Origin)
+  if (typeof window !== "undefined") return "";
 
-export async function getBaseUrl() {
-  const h = await headers();
+  // Server: explizite App-URL nutzen
+  const appUrl = process.env.APP_URL;
+  if (appUrl) return appUrl.replace(/\/+$/, ""); // trailing slash weg
 
-  // Vercel/Proxy-friendly
-  const proto = h.get("x-forwarded-proto") ?? "http";
-  const host = h.get("x-forwarded-host") ?? h.get("host");
-
-  if (!host) {
-    // Fallback for edge cases (dev tooling etc.)
-    return "http://localhost:5000";
-  }
-
-  return `${proto}://${host}`;
+  // Fallback nur für lokale Entwicklung
+  return "http://localhost:3000";
 }
