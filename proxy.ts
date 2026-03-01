@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { NextRequest } from "next/server";
 import { verifySession, getSessionCookieName, Role } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
+import { publicUrl } from "@/lib/publicUrl";
 
 const STAFF: Role[] = ["ADMIN", "SCRIPTOR", "ARCHIVAR"];
 
@@ -27,7 +28,7 @@ export async function proxy(req: NextRequest){
     );
   }
     
-    if(!token) return NextResponse.redirect(new URL("/login", req.url));
+    if(!token) return NextResponse.redirect(publicUrl("/login"))
 
     const session = await verifySession(token);
   if (!session) {
@@ -39,7 +40,7 @@ export async function proxy(req: NextRequest){
     if (!session) {
   return new NextResponse("Session invalid - check JWT_SECRET/cookie name", { status: 401 });
 }
-    if(!session) return NextResponse.redirect(new URL("/login", req.url));
+    if(!session) return NextResponse.redirect(publicUrl("/login"))
 
     if (
         session.mustChangePassword &&
@@ -47,7 +48,7 @@ export async function proxy(req: NextRequest){
         !pathname.startsWith("/api/change-passwort") &&
         !pathname.startsWith("/api/logout")
     ){
-        return NextResponse.redirect(new URL("/passwort-aendern", req.url));
+        return NextResponse.redirect(publicUrl("/passwort-aendern"));
     }
 
     // RBAC: MEMBER eingeschränkt
@@ -62,10 +63,10 @@ export async function proxy(req: NextRequest){
         pathname.startsWith("/inventur") ||
         pathname.startsWith("/buecher");
 
-        if (!allowed) return NextResponse.redirect(new URL("/", req.url));
+        if (!allowed) return NextResponse.redirect(publicUrl("/"));
     }
     if(pathname.startsWith("/admin")){
-        if (!can(session.role, "ADMIN_PANEL")) return NextResponse.redirect(new URL("/", req.url));
+        if (!can(session.role, "ADMIN_PANEL")) return NextResponse.redirect(publicUrl("/"));
     }
     if (
         pathname.startsWith("/inventur")||
@@ -74,7 +75,7 @@ export async function proxy(req: NextRequest){
         pathname.startsWith("api/admin") ||
         pathname.startsWith("api/inventory")
     ){
-        if (!STAFF.includes(session.role)) return NextResponse.redirect(new URL("/", req.url));
+        if (!STAFF.includes(session.role)) return NextResponse.redirect(publicUrl("/"));
     }
     return NextResponse.next();
 }

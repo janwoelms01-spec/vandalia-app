@@ -16,7 +16,7 @@ type Body = {
 export async function GET(req: Request) {
   const perm = await requireApiPermission("ROOM_LOANS_READ");
   if (!perm.ok) return perm.response;
-
+ 
   const { searchParams } = new URL(req.url);
 
   const status = searchParams.get("status");
