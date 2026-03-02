@@ -45,7 +45,7 @@ export async function proxy(req: NextRequest){
     if (
         session.mustChangePassword &&
         !pathname.startsWith("/passwort-aendern") &&
-        !pathname.startsWith("/api/change-passwort") &&
+        !pathname.startsWith("/api/change-password") &&
         !pathname.startsWith("/api/logout")
     ){
         return NextResponse.redirect(publicUrl("/passwort-aendern"));
