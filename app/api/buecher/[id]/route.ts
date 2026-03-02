@@ -26,3 +26,56 @@ export async function DELETE(
 
   return NextResponse.json({ ok: true });
 }
+export async function PATCH(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+
+  const auth = await requireApiPermission("BOOKS_MANAGE");
+  if (!auth.ok) return auth.response;
+
+  let body: any;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const patch : any = {};
+  if (body?.title != null) {
+    patch.title = String(body.title).trim();
+  }
+  if (body?.short_code != null) {
+    patch.short_code = String(body.short_code).trim();
+  }
+  if (body?.is_active !== undefined) {
+    patch.is_active = Boolean(body.is_active);
+  }
+  const cover_url =
+    body?.cover_url === null ? null :
+    typeof body?.cover_url === "string" ? body.cover_url.trim() :
+    undefined;
+  if (cover_url === undefined) {
+    return NextResponse.json({ error: "Nothing to update (cover_url missing)" }, { status: 400 });
+  }
+
+  if (Object.keys(patch).length === 0) {
+    return NextResponse.json({ error: "No fields to update" }, { status: 400 });
+  }
+
+  const updated = await prisma.titles.update({
+    where: { id },
+    data: patch,
+    select: {
+      id: true,
+      title: true,
+      short_code: true,
+      is_active: true,
+      cover_url: true,
+      updated_at: true, // falls vorhanden
+    },
+  });
+
+  return NextResponse.json({ title: updated });
+}
