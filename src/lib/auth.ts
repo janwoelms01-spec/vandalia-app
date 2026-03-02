@@ -25,7 +25,7 @@ export async function verifyJWT(token: string): Promise<SessionPayload | null> {
 
 export async function getSession(): Promise<SessionPayload | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get("hbv_session")?.value;
+  const token = cookieStore.get(getSessionCookieName())?.value;
   if (!token) return null;
   return await verifyJWT(token);
 }

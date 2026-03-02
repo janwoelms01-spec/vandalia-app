@@ -50,17 +50,19 @@ export async function POST(req: Request) {
 console.log("must_change_password after:", after?.must_change_password);
 
 const newToken = await signSession({
-    sub: user.id,
-    // falls du das Feld im Token führst:
-    mustChangePassword: false,
-    username: "",
-    role: "ADMIN"
+  sub: user.id,
+  username: user.username,
+  role: user.role,
+  mustChangePassword: false,
 });
 
-const res = NextResponse.redirect(publicUrl("/"), 303);
-res.cookies.set(cookieName, newToken, {
+const res = NextResponse.json({ ok: true });
+
+// optional: Session erneuern ODER löschen
+res.cookies.set(cookieName, "", {
   httpOnly: true,
   path: "/",
+  maxAge: 0,
   sameSite: "lax",
   secure: process.env.NODE_ENV === "production",
 });
