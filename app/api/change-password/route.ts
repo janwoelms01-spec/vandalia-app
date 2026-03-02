@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import argon2 from "argon2";
 import { PrismaClient } from "@prisma/client";
-import { verifySession, getSessionCookieName } from "@/lib/auth";
+import { verifySession, getSessionCookieName, signSession } from "@/lib/auth";
 import { publicUrl } from "@/lib/publicUrl";
 
 const prisma = new PrismaClient();
@@ -46,17 +46,25 @@ export async function POST(req: Request) {
       password_changed_at: new Date(),
     },
   });
+  const after = await prisma.users.findUnique({ where: { id: user.id } });
+console.log("must_change_password after:", after?.must_change_password);
 
-  const res = NextResponse.redirect(publicUrl("/login"), 303);
+const newToken = await signSession({
+    sub: user.id,
+    // falls du das Feld im Token führst:
+    mustChangePassword: false,
+    username: "",
+    role: "ADMIN"
+});
 
-  // Cookie sauber löschen (Name + gleiche Attribute)
-  res.cookies.set(cookieName, "", {
-    httpOnly: true,
-    path: "/",
-    maxAge: 0,
-    sameSite: "lax",
-    secure: process.env.NODE_ENV === "production",
-  });
+const res = NextResponse.redirect(publicUrl("/"), 303);
+res.cookies.set(cookieName, newToken, {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax",
+  secure: process.env.NODE_ENV === "production",
+});
 
-  return res;
+return res;
+
 }
