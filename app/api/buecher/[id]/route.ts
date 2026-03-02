@@ -1,8 +1,5 @@
-import { getSessionCookieName, verifySession } from "@/lib/auth";
-
-import { can } from "@/lib/rbac/permissions";
+import { requireApiPermission } from "@/lib/api/requireApiPermissions";
 import { PrismaClient } from "@prisma/client";
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -13,16 +10,8 @@ export async function DELETE(
 ) {
   const { id } = await context.params;
 
-  const token = (await cookies()).get(getSessionCookieName())?.value;
-    if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const session = await verifySession(token);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  // fürs Erste: nur BOOKS_MANAGE (oder später BOOK_DELETE zusätzlich)
-  if (!can(session.role, "BOOKS_MANAGE")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
+  const auth = await requireApiPermission("BOOKS_MANAGE");
+  if (!auth.ok) return auth.response;
 
   await prisma.titles.update({
     where: { id },

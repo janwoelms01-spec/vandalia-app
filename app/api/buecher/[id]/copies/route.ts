@@ -7,6 +7,7 @@ import { verifySession, getSessionCookieName } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
 import { error } from "console";
 import CopiesEditor from "@/component/buecher/CopiesEditor";
+import { requireApiAnyPermission, requireApiPermission } from "@/lib/api/requireApiPermissions";
 
 // Optional: wenn du den Helper schon hast, nutz ihn.
 // import { getIdParam } from "@/lib/api/routeParams";
@@ -38,21 +39,8 @@ export async function POST(
     }
 
     // --- Auth ---
-    const token = (await cookies()).get(getSessionCookieName())?.value;
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const session = await verifySession(token);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // --- RBAC (Copy anlegen) ---
-    // Du kannst hier auch nur COPY_CREATE nehmen, aber fallback auf BOOKS_MANAGE ist ok.
-    if (!can(session.role, "COPY_CREATE") && !can(session.role, "BOOKS_MANAGE")) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const auth = await requireApiAnyPermission(["COPY_CREATE", "BOOKS_MANAGE"]);
+       if (!auth.ok) return auth.response;
 
     // --- Body ---
     let body: any;
@@ -177,21 +165,8 @@ export async function GET(
   if (!id) {
     return NextResponse.json({ error: "Missing route param id" }, { status: 400 });
   }
-  const token = (await cookies()).get(getSessionCookieName())?.value;
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const session = await verifySession(token);
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // --- RBAC (Copy anlegen) ---
-    //  nehmen, aber fallback auf BOOKS_READ ist ok.
-    if ( !can(session.role, "BOOKS_READ")) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+   const auth = await requireApiPermission("BOOKS_READ");
+    if (!auth.ok) return auth.response;
 
     const copies = await prisma.copies.findMany({
       where: {
@@ -222,18 +197,8 @@ export async function PATCH(
   const { id } = await context.params;
   if (!id) return NextResponse.json({ error: "Missing route param id" }, { status: 400 });
 
-  // Auth
-  const token = (await cookies()).get(getSessionCookieName())?.value;
-  if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const session = await verifySession(token);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  // RBAC: Titel bearbeiten
-  if (!can(session.role, "BOOK_UPDATE") && !can(session.role, "BOOKS_MANAGE")) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
+  const auth = await requireApiAnyPermission(["BOOK_UPDATE", "BOOKS_MANAGE"]);
+  if (!auth.ok) return auth.response;
   let body: any;
   try {
     body = await req.json();

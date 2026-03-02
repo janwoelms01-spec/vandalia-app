@@ -1,9 +1,6 @@
-import { getSessionCookieName, verifySession } from "@/lib/auth";
 import { copies_state, PrismaClient } from "@prisma/client";
-import { can } from "@/lib/rbac/permissions";
-
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { requireApiAnyPermission } from "@/lib/api/requireApiPermissions";
 
 const prisma = new PrismaClient();
 
@@ -14,16 +11,9 @@ const prisma = new PrismaClient();
     const {id: titleId, copyId} = await context.params;
 
     //Auth
-    const token = (await cookies()).get(getSessionCookieName())?.value;
-    if (!token) return NextResponse.json({error:"Unauthorized"}, {status: 401});
-
-    const session = await verifySession(token);
-    if(!session) return NextResponse.json({error:"Unauthorized"}, {status: 401});
-
-    //RBAC
-    if (!can(session.role, "COPY_UPDATE") && !can(session.role, "BOOKS_MANAGE")){
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const auth = await requireApiAnyPermission(["COPY_UPDATE", "BOOKS_MANAGE"]);
+    if (!auth.ok) return auth.response;
+    
     //Body
     let body: any;
     try {
