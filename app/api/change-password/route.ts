@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import argon2 from "argon2";
 import { PrismaClient } from "@prisma/client";
 import { verifySession, getSessionCookieName, signSession } from "@/lib/auth";
+import { publicUrl } from "@/lib/publicUrl";
 
 const prisma = new PrismaClient();
 
@@ -41,21 +42,13 @@ export async function POST(req: Request) {
         },
     });
 
-    const newToken = await signSession({
-        sub: user.id,
-        username: user.username,
-        role: user.role,
-        mustChangePassword: false,
-    });
+const res = NextResponse.redirect(publicUrl("/login"));
 
-    const res = NextResponse.json({ok:true});
-    res.cookies.set(cookieName, newToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        path:"/",
-        maxAge: 60*60*24*3,
-    });
+res.cookies.set("hbv_session", "", {
+  httpOnly: true,
+  path: "/",
+  maxAge: 0,
+});
 
-    return res;
+return res;
 }
