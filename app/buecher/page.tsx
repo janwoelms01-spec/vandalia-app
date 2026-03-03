@@ -18,6 +18,7 @@ type ApiTitle = {
   authors: string | null;
   cover_url?: string | null;
   _count?: { copies?: number };
+  cover_key?: string | null;
 };
 
 function normalizeAuthors(authors: string | null) {
@@ -117,13 +118,11 @@ export default async function BooksPage() {
                               return coverUrl ? (
                                 <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
                                  <Image
-                                  src={coverUrl}
-                                  alt={`Cover: ${t.title}`}
-                                  fill
-                                  sizes="180px"
-                                  className="object-contain"
-                                  unoptimized
-                                  />
+  src={`/api/covers/${t.cover_key}`}
+  alt={`Cover: ${t.title}`}
+  fill
+  className="object-contain"
+/>
                                 </div>
                               ) : (
                             <div className="h-17.5 w-12.5 rounded-md border border-zinc-200 bg-zinc-100" />

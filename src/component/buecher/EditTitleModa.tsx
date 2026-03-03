@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-
-
+import Image from "next/image";
+import CoverUpload from "../CoverUpload";
 
 type Title = {
   id: string;
@@ -14,7 +14,17 @@ type Title = {
   published_at: string | null;
   language: string | null;
   cover_url: string | null;
+  cover_key: string | null;
 };
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <h4 className="font-medium text-zinc-900">{title}</h4>
+      {children}
+    </div>
+  );
+}
 
 export default function EditTitleModal({ title }: { title: Title }) {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -192,7 +202,26 @@ export default function EditTitleModal({ title }: { title: Title }) {
               />
             </div>
           </div>
-          
+
+          <Section title="Cover">
+  <div className="flex gap-4">
+    <div className="relative h-[220px] w-[150px] rounded border overflow-hidden">
+      {title.cover_key ? (
+        <Image src={`/api/covers/${title.cover_key}`} alt="" fill className="object-contain" />
+      ) : (
+        <div className="h-full w-full flex items-center justify-center text-sm text-zinc-400">
+          Kein Cover
+        </div>
+      )}
+    </div>
+
+    <div className="flex flex-col gap-2">
+      <CoverUpload titleId={title.id} />
+      {/* optional: Remove */}
+      {/* <CoverRemove titleId={title.id} /> */}
+    </div>
+  </div>
+</Section>
 
           <div className="flex items-center justify-end gap-2 border-t border-zinc-200 pt-4">
               <button

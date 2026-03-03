@@ -93,6 +93,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
       is_active: true,
       categories: { select: { name: true, code: true } },
       subcategories: { select: { name: true, code: true } },
+      cover_key:true,
     },
   });
 
@@ -112,12 +113,11 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
         <div className="relative h-65 w-45 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
           {title.cover_url?.trim() ? (
             <Image
-              src={title.cover_url.trim()}
-              alt={`Cover: ${title.title}`}
-              fill
-              sizes="180px"
-              className="object-cover"
-            />
+  src={`/api/covers/${title.cover_key}`}
+  alt={`Cover: ${title.title}`}
+  fill
+  className="object-contain"
+/>
           ) : (
             <div className="h-full w-full bg-zinc-100 flex items-center justify-center">
               <span className="text-xs text-zinc-500">Kein Cover</span>
