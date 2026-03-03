@@ -4,6 +4,13 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 
+function normalizeCoverUrl(input: string) {
+  const u = input.trim();
+  // häufigster Fall: http-Bild auf https-Seite -> erzwinge https wenn möglich
+  if (u.startsWith("http://")) return "https://" + u.slice("http://".length);
+  return u;
+}
+
 export async function DELETE(
   _req: Request,
   context: { params: Promise<{ id: string }> }
@@ -56,13 +63,13 @@ export async function PATCH(
   }
 
   if (body?.cover_url !== undefined) {
-    patch.cover_url =
-      body.cover_url === null
-        ? null
-        : typeof body.cover_url === "string"
-          ? body.cover_url.trim()
-          : null;
-  }
+  patch.cover_url =
+    body.cover_url === null
+      ? null
+      : typeof body.cover_url === "string"
+        ? normalizeCoverUrl(body.cover_url)
+        : null;
+}
 
   if (Object.keys(patch).length === 0) {
     return NextResponse.json({ error: "No fields to update" }, { status: 400 });

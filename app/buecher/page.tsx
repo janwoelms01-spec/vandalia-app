@@ -7,6 +7,7 @@ import { getSession } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
 import { getBaseUrl } from "@/lib/http";
 import Image from "next/image";
+import { title } from "process";
 // import { getDisplayCoverUrl } from "@/lib/api/getDisplayCoverUrl";
 
 
@@ -115,12 +116,13 @@ export default async function BooksPage() {
 
                               return coverUrl ? (
                                 <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
-                                  <Image
+                                 <Image
                                   src={coverUrl}
                                   alt={`Cover: ${t.title}`}
                                   fill
-                                  sizes="50px"
-                                  className="object-cover"
+                                  sizes="180px"
+                                  className="object-contain"
+                                  unoptimized
                                   />
                                 </div>
                               ) : (
