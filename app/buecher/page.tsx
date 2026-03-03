@@ -113,9 +113,8 @@ export default async function BooksPage() {
                     <tr key={t.id} className="border-b border-zinc-100 hover:bg-zinc-50">
                         <td className="p-3">
                           {(() => {
-                              const coverUrl = t.cover_url?.trim() ? t.cover_url.trim() : null;
 
-                              return coverUrl ? (
+                              return t.cover_key ? (
                                 <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
                                  <Image
   src={`/api/covers/${t.cover_key}`}

@@ -20,6 +20,7 @@ export default function NewBookForm() {
   const [lookupStatus, setLookupStatus] = useState<"idle" | "loading" | "found" | "notfound" | "error">("idle");
   const [lookupMsg, setLookupMsg] = useState<string | null>(null);
   const lastLookup = useRef<string>("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
 
   // --- form fields
   const [title, setTitle] = useState("");
@@ -126,6 +127,22 @@ export default function NewBookForm() {
 
       // Dein POST antwortet: { title: created }
       const createdId = data?.title?.id;
+      if (createdId && coverFile) {
+  const fd = new FormData();
+  fd.append("file", coverFile);
+
+  const up = await fetch(`/api/buecher/${createdId}/cover/upload`, {
+    method: "POST",
+    body: fd,
+  });
+
+  if (!up.ok) {
+    const j = await up.json().catch(() => ({}));
+    setError(j?.error ?? "Cover-Upload fehlgeschlagen");
+    setSubmitting(false);
+    return;
+  }
+}
       if (createdId) {
         router.replace(`/buecher/${createdId}`);
         router.refresh();
@@ -167,6 +184,15 @@ export default function NewBookForm() {
         </div>
         {lookupMsg ? <p className="text-xs text-zinc-500">{lookupMsg}</p> : null}
       </div>
+      <div className="md:col-span-2 space-y-1">
+  <label className="block text-sm font-medium text-zinc-800">Cover Upload (optional)</label>
+  <input
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+    className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm"
+  />
+</div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="md:col-span-2 space-y-1">

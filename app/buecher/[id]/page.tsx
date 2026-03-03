@@ -110,20 +110,21 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
     <div className="mx-auto max-w-6xl p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div className="relative h-65 w-45 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
-          {title.cover_url?.trim() ? (
-            <Image
-  src={`/api/covers/${title.cover_key}`}
-  alt={`Cover: ${title.title}`}
-  fill
-  className="object-contain"
-/>
-          ) : (
-            <div className="h-full w-full bg-zinc-100 flex items-center justify-center">
-              <span className="text-xs text-zinc-500">Kein Cover</span>
-            </div>
-          )}
-        </div>
+        <div className="relative h-[260px] w-[180px] shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+  {title.cover_key ? (
+    <Image
+      src={`/api/covers/${title.cover_key}`}
+      alt={`Cover: ${title.title}`}
+      fill
+      className="object-contain"
+      sizes="180px"
+    />
+  ) : (
+    <div className="h-full w-full bg-zinc-100 flex items-center justify-center">
+      <span className="text-xs text-zinc-500">Kein Cover</span>
+    </div>
+  )}
+</div>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 font-mono text-xs text-zinc-700">
@@ -242,6 +243,7 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
       published_at: title.published_at,
       language: title.language,
       cover_url: title.cover_url,
+      cover_key: title.cover_key,
     }}
   />
 ) : null}
