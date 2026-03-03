@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -11,6 +11,18 @@ function formatBytes(n: number) {
   if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
+
+useEffect(() => {
+  function prevent(e: DragEvent) {
+    e.preventDefault();
+  }
+  window.addEventListener("dragover", prevent);
+  window.addEventListener("drop", prevent);
+  return () => {
+    window.removeEventListener("dragover", prevent);
+    window.removeEventListener("drop", prevent);
+  };
+}, []);
 
 export default function CoverUpload({ titleId }: { titleId: string }) {
   const router = useRouter();
