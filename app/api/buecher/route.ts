@@ -237,6 +237,7 @@ export async function GET(){
             short_code: true,
             identifier_type: true,
             created_at:true,
+            cover_key: true,
             _count: {select: {copies: {where: {is_active: true},},},},
         },
     });

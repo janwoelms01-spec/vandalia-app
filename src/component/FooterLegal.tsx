@@ -17,20 +17,23 @@ export default function FooterLegal() {
 
   return (
     <>
-      <footer className="w-full text-center py-4 border-t mt-10 text-sm text-gray-600">
-        <button
-          onClick={() => setOpen("impressum")}
-          className="mx-3 hover:underline"
-        >
-          Impressum
-        </button>
-        <button
-          onClick={() => setOpen("datenschutz")}
-          className="mx-3 hover:underline"
-        >
-          Datenschutz
-        </button>
-      </footer>
+     <footer className="w-full border-t border-gray-200 mt-6">
+  <div className="max-w-6xl mx-auto py-3 text-xs text-gray-500 flex justify-center gap-6">
+    <button
+      onClick={() => setOpen("impressum")}
+      className="hover:text-gray-800 transition-colors"
+    >
+      Impressum
+    </button>
+
+    <button
+      onClick={() => setOpen("datenschutz")}
+      className="hover:text-gray-800 transition-colors"
+    >
+      Datenschutz
+    </button>
+  </div>
+</footer>
 
       {open && (
         <div

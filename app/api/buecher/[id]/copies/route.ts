@@ -185,6 +185,7 @@ export async function GET(
         note: true,
         created_at: true,
         updated_at: true,
+        
       },
     });
     return NextResponse.json({copies});
