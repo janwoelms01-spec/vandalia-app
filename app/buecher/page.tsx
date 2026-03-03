@@ -7,7 +7,7 @@ import { getSession } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
 import { getBaseUrl } from "@/lib/http";
 import Image from "next/image";
-import { getDisplayCoverUrl } from "@/lib/api/getDisplayCoverUrl";
+// import { getDisplayCoverUrl } from "@/lib/api/getDisplayCoverUrl";
 
 
 type ApiTitle = {
