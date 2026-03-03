@@ -67,20 +67,20 @@ function Impressum() {
       </p>
 
       <p className="mb-4">
-        Jan [Nachname] <br />
-        [Straße Hausnummer] <br />
-        [PLZ Ort] <br />
+        Jan Wölms <br />
+        Schumannstraße 7 <br />
+        53113 Bonn <br />
         Deutschland
       </p>
 
       <p className="mb-4">
         Kontakt: <br />
-        E-Mail: [deine@email.de]
+        E-Mail: janwoelms01@gmail.com
       </p>
 
       <p>
         Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV: <br />
-        Jan [Nachname], Anschrift wie oben
+        Jan Wölms, Anschrift wie oben
       </p>
     </>
   );
@@ -93,9 +93,10 @@ function Datenschutz() {
 
       <h3 className="font-semibold mt-4 mb-2">1. Verantwortlicher</h3>
       <p className="mb-4">
-        Jan [Nachname] <br />
-        [Anschrift] <br />
-        E-Mail: [deine@email.de]
+        Jan Wölms <br />
+        Schumannstraße 7 <br />
+        53113 Bonn <br />
+        E-Mail: janwoelms01@gmail.com
       </p>
 
       <h3 className="font-semibold mt-4 mb-2">2. Hosting</h3>
