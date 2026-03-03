@@ -9,6 +9,7 @@ import { getBaseUrl } from "@/lib/http";
 import AddCopyModal from "@/component/buecher/AddCopyModal";
 import CopiesEditor from "@/component/buecher/CopiesEditor";
 import EditTitleModal from "@/component/buecher/EditTitleModa";
+import Image from "next/image";
 
 const prisma = new PrismaClient();
 
@@ -108,6 +109,21 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
     <div className="mx-auto max-w-6xl p-6 space-y-6">
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
+        <div className="relative h-65 w-45 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
+          {title.cover_url?.trim() ? (
+            <Image
+              src={title.cover_url.trim()}
+              alt={`Cover: ${title.title}`}
+              fill
+              sizes="180px"
+              className="object-cover"
+            />
+          ) : (
+            <div className="h-full w-full bg-zinc-100 flex items-center justify-center">
+              <span className="text-xs text-zinc-500">Kein Cover</span>
+            </div>
+          )}
+        </div>
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
             <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2 py-1 font-mono text-xs text-zinc-700">

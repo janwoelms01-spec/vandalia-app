@@ -109,26 +109,25 @@ export default async function BooksPage() {
 
                   return (
                     <tr key={t.id} className="border-b border-zinc-100 hover:bg-zinc-50">
-                      <td className="p-3">
-                        {<td className="p-3">
-    {(() => {
-    const coverUrl =
-      (t.cover_url?.trim() ? t.cover_url.trim() : null);
+                        <td className="p-3">
+                          {(() => {
+                              const coverUrl = t.cover_url?.trim() ? t.cover_url.trim() : null;
 
-    return coverUrl ? (
-      <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
-        <Image
-          src={coverUrl}
-          alt={`Cover: ${t.title}`}
-          fill
-          sizes="50px"
-        />
-      </div>
-    ) : (
-      <div className="h-17.5 w-12.5 rounded-md border border-zinc-200 bg-zinc-100" />
-    );
-  })()}
-</td>}
+                              return coverUrl ? (
+                                <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+                                  <Image
+                                  src={coverUrl}
+                                  alt={`Cover: ${t.title}`}
+                                  fill
+                                  sizes="50px"
+                                  className="object-cover"
+                                  />
+                                </div>
+                              ) : (
+                            <div className="h-17.5 w-12.5 rounded-md border border-zinc-200 bg-zinc-100" />
+                         );
+                        })()}
+
                       </td>
 
                       <td className="p-3 font-mono text-[13px] text-zinc-700">
