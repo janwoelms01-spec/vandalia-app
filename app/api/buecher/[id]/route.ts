@@ -26,6 +26,7 @@ export async function DELETE(
 
   return NextResponse.json({ ok: true });
 }
+
 export async function PATCH(
   req: Request,
   context: { params: Promise<{ id: string }> }
@@ -42,7 +43,8 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const patch : any = {};
+  const patch: any = {};
+
   if (body?.title != null) {
     patch.title = String(body.title).trim();
   }
@@ -52,12 +54,14 @@ export async function PATCH(
   if (body?.is_active !== undefined) {
     patch.is_active = Boolean(body.is_active);
   }
-  const cover_url =
-    body?.cover_url === null ? null :
-    typeof body?.cover_url === "string" ? body.cover_url.trim() :
-    undefined;
-  if (cover_url === undefined) {
-    return NextResponse.json({ error: "Nothing to update (cover_url missing)" }, { status: 400 });
+
+  if (body?.cover_url !== undefined) {
+    patch.cover_url =
+      body.cover_url === null
+        ? null
+        : typeof body.cover_url === "string"
+          ? body.cover_url.trim()
+          : null;
   }
 
   if (Object.keys(patch).length === 0) {
@@ -73,7 +77,7 @@ export async function PATCH(
       short_code: true,
       is_active: true,
       cover_url: true,
-      updated_at: true, // falls vorhanden
+      updated_at: true,
     },
   });
 
