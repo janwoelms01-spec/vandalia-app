@@ -12,7 +12,11 @@ function formatBytes(n: number) {
   return `${(n / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-useEffect(() => {
+
+
+export default function CoverUpload({ titleId }: { titleId: string }) {
+  const router = useRouter();
+  useEffect(() => {
   function prevent(e: DragEvent) {
     e.preventDefault();
   }
@@ -23,9 +27,6 @@ useEffect(() => {
     window.removeEventListener("drop", prevent);
   };
 }, []);
-
-export default function CoverUpload({ titleId }: { titleId: string }) {
-  const router = useRouter();
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
