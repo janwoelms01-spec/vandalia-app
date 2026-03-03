@@ -6,12 +6,16 @@ import { headers } from "next/headers";
 import { getSession } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
 import { getBaseUrl } from "@/lib/http";
+import Image from "next/image";
+import { getDisplayCoverUrl } from "@/lib/api/getDisplayCoverUrl";
+
 
 type ApiTitle = {
   id: string;
   short_code: string;
   title: string;
   authors: string | null;
+  cover_url?: string | null;
   _count?: { copies?: number };
 };
 
@@ -79,6 +83,9 @@ export default async function BooksPage() {
             <thead className="border-b border-zinc-200 bg-zinc-50">
               <tr>
                 <th className="whitespace-nowrap p-3 text-left font-semibold text-zinc-700 w-47,5">
+                  Buch-Cover 
+                  </th>
+                <th className="whitespace-nowrap p-3 text-left font-semibold text-zinc-700 w-47,5">
                   Short Code
                 </th>
                 <th className="p-3 text-left font-semibold text-zinc-700">Titel</th>
@@ -102,6 +109,28 @@ export default async function BooksPage() {
 
                   return (
                     <tr key={t.id} className="border-b border-zinc-100 hover:bg-zinc-50">
+                      <td className="p-3">
+                        {<td className="p-3">
+    {(() => {
+    const coverUrl =
+      (t.cover_url?.trim() ? t.cover_url.trim() : null);
+
+    return coverUrl ? (
+      <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
+        <Image
+          src={coverUrl}
+          alt={`Cover: ${t.title}`}
+          fill
+          sizes="50px"
+        />
+      </div>
+    ) : (
+      <div className="h-17.5 w-12.5 rounded-md border border-zinc-200 bg-zinc-100" />
+    );
+  })()}
+</td>}
+                      </td>
+
                       <td className="p-3 font-mono text-[13px] text-zinc-700">
                         <Link href={`/buecher/${t.id}`} className="block rounded px-1 py-1 hover:underline">
                           {t.short_code}
