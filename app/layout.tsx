@@ -3,6 +3,7 @@ import { Links } from "@/component/Links";
 import AccountMenu from "@/component/Account-Menu";
 import Image from "next/image";
 import "./globals.css";
+import FooterLegal from "@/component/FooterLegal";
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -24,7 +25,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <AccountMenu user={user} />
         </header>
 
-        <main>{children}</main>
+        <main>{children}
+
+          <FooterLegal />
+        </main>
       </body>
     </html>
   );

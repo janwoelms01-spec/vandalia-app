@@ -205,7 +205,7 @@ export default function EditTitleModal({ title }: { title: Title }) {
 
           <Section title="Cover">
   <div className="flex gap-4">
-    <div className="relative h-[220px] w-[150px] rounded border overflow-hidden">
+    <div className="relative h-55 w-37.5 rounded border overflow-hidden">
       {title.cover_key ? (
         <Image src={`/api/covers/${title.cover_key}`} alt="" fill className="object-contain" unoptimized />
       ) : (
