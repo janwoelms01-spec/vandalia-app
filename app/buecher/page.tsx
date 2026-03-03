@@ -116,11 +116,13 @@ export default async function BooksPage() {
 
                               return t.cover_key ? (
                                 <div className="relative h-17.5 w-12.5 overflow-hidden rounded-md border border-zinc-200 bg-zinc-50">
-                                 <Image
+<Image
   src={`/api/covers/${t.cover_key}`}
   alt={`Cover: ${t.title}`}
   fill
   className="object-contain"
+  sizes="180px"
+  unoptimized
 />
                                 </div>
                               ) : (

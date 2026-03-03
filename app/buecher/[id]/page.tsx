@@ -112,13 +112,14 @@ export default async function BookDetailPage({ params }: { params: Promise<{ id:
       <div className="flex items-start justify-between gap-4">
         <div className="relative h-[260px] w-[180px] shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
   {title.cover_key ? (
-    <Image
-      src={`/api/covers/${title.cover_key}`}
-      alt={`Cover: ${title.title}`}
-      fill
-      className="object-contain"
-      sizes="180px"
-    />
+<Image
+  src={`/api/covers/${title.cover_key}`}
+  alt={`Cover: ${title.title}`}
+  fill
+  className="object-contain"
+  sizes="180px"
+  unoptimized
+/>
   ) : (
     <div className="h-full w-full bg-zinc-100 flex items-center justify-center">
       <span className="text-xs text-zinc-500">Kein Cover</span>
