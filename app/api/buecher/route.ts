@@ -64,7 +64,7 @@ export async function POST(req:Request) {
     } catch {
         return NextResponse.json({error: "Invalid JSON"}, {status:400});
     }
-    
+    console.log("NEXTCLOUD_BASE_URL:", process.env.NEXTCLOUD_BASE_URL);
     const title = String(body?.title ?? "").trim();
     const categoryName= String(body?.category_name ?? "").trim();
     const subcategoryNameRaw=body?.subcategory_name != null ? String(body.subcategory_name).trim(): "";
