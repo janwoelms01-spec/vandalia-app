@@ -81,7 +81,7 @@ export default function LoansPage() {
     const p = new URLSearchParams();
     p.set("tab", tab);
     if (mine) p.set("mine", "1");
-    router.replace(`/loans?${p.toString()}`);
+    router.replace(`/mitnahme?${p.toString()}`);
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, mine]);
