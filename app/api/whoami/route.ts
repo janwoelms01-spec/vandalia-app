@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { verifySession, getSessionCookieName } from "@/lib/auth";
-import { getUserPermissions } from "@/lib/auth/permissions"; // <- wenn du sowas hast, sonst siehe Hinweis
 
 const prisma = new PrismaClient();
 
