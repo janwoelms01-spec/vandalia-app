@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { Role } from "./types";
 
 type WhoAmI = {
   ok: boolean;
@@ -8,7 +9,7 @@ type WhoAmI = {
     id: string;
     username: string;
     display_name?: string | null;
-    role: string;
+    role: Role;
   };
 };
 
