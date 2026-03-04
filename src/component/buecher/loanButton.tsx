@@ -21,7 +21,7 @@ export function RequestLoanButton({ copyId }: { copyId: string }) {
       if (!res.ok) throw new Error(j.error || "Konnte keine Anfrage erstellen.");
 
       // nice: direkt zur loans-seite (mine=1) oder zur detailansicht
-      router.push("/loans?tab=REQUESTED&mine=1");
+      router.push("/mitnahme?tab=REQUESTED&mine=1");
       router.refresh();
     } catch (e: any) {
       setErr(e?.message || "Fehler");
