@@ -1,5 +1,5 @@
 "use client";
-import useWhoAmI from "@/lib/hooks/useWhoAmI";
+import {useWhoAmI} from "@/lib/hooks/useWhoAmI";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
