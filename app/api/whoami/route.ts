@@ -20,7 +20,7 @@ export async function GET(req: Request) {
   // du hast sehr wahrscheinlich session.sub als userId
   const user = await prisma.users.findUnique({
     where: { id: session.sub },
-    select: { id: true, username: true, display_name: true },
+    select: { id: true, username: true, role: true },
   });
 
   if (!user) return NextResponse.json({ ok: false, error: "User nicht gefunden." }, { status: 404 });
@@ -31,7 +31,6 @@ export async function GET(req: Request) {
     user:{
       id: user.id,
       username: user.username,
-      display_name: user.display_name,
       role: user.role,
     }
   });
