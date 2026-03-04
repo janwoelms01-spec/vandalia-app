@@ -1,6 +1,6 @@
 "use client";
 import {useWhoAmI} from "@/lib/hooks/useWhoAmI";
-import { can } from "@/lib/permissions";
+import { can } from "@/lib/rbac/permissions";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
