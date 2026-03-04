@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { PrismaClient, copies_state, room_loans_status } from "@prisma/client";
 import { requireApiPermission } from "@/lib/api/requireApiPermissions";
 
