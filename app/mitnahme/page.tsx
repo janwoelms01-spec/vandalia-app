@@ -1,5 +1,5 @@
 "use client";
-
+import useWhoAmI from "@/lib/hooks/useWhoAmI";
 import { useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -42,7 +42,7 @@ function TabButton({ active, onClick, children }: any) {
 export default function LoansPage() {
   const router = useRouter();
   const sp = useSearchParams();
-
+  const { role } = useWhoAmI();
   const [tab, setTab] = useState<TabKey>((sp.get("tab") as TabKey) || "REQUESTED");
   const [mine, setMine] = useState(sp.get("mine") === "1");
   const [loading, setLoading] = useState(false);
@@ -120,7 +120,9 @@ export default function LoansPage() {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        <TabButton active={tab === "REQUESTED"} onClick={() => setTab("REQUESTED")}>Requests</TabButton>
+        (role && can(role, "ROOM_LOANS_MANAGE") && (
+          <TabButton active={tab === "REQUESTED"} onClick={() => setTab("REQUESTED")}>Requests</TabButton>
+        ))}
         <TabButton active={tab === "APPROVED"} onClick={() => setTab("APPROVED")}>Freigegeben</TabButton>
         <TabButton active={tab === "OUT"} onClick={() => setTab("OUT")}>Ausgeliehen</TabButton>
         <TabButton active={tab === "OVERDUE"} onClick={() => setTab("OVERDUE")}>Überfällig</TabButton>
