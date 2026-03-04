@@ -10,7 +10,7 @@ import AddCopyModal from "@/component/buecher/AddCopyModal";
 import CopiesEditor from "@/component/buecher/CopiesEditor";
 import EditTitleModal from "@/component/buecher/EditTitleModa";
 import Image from "next/image";
-IMPORT { RequestLoanButton } from "@/component/buecher/RequestLoanButton";
+import { RequestLoanButton } from "@/component/buecher/RequestLoanButton";
 
 const prisma = new PrismaClient();
 
