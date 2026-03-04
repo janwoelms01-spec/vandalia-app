@@ -25,9 +25,16 @@ export async function GET(req: Request) {
 
   const where: any = {};
 
-  if (status) {
-    where.status = status;
+  const allowed = new Set(Object.values(room_loans_status));
+if (status) {
+  if (!allowed.has(status as room_loans_status)) {
+    return NextResponse.json(
+      { error: `Ungültiger status. Erlaubt: ${Object.values(room_loans_status).join(", ")}` },
+      { status: 400 }
+    );
   }
+  where.status = status as room_loans_status;
+}
 
   if (mine === "1") {
     where.user_id = perm.session.sub;
