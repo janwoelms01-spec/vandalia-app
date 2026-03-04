@@ -153,7 +153,7 @@ export default function LoansPage() {
               <div className="col-span-5">
                 <div className="font-medium">{titleOf(l)}</div>
                 <div className="text-xs text-gray-600">
-                  Copy: {l.copies?.id} {l.copies?.copy_code ? `(${l.copies.copy_code})` : ""}
+                  Copy: {l.copies?.copy_code ? `(${l.copies.copy_code})` : ""}
                 </div>
                 {l.note && <div className="text-xs text-gray-600 mt-1">Notiz: {l.note}</div>}
               </div>
