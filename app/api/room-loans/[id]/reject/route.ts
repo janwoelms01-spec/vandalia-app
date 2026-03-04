@@ -1,18 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, room_loans_status } from "@prisma/client";
 import { requireApiPermission } from "@/lib/api/requireApiPermissions";
 
 const prisma = new PrismaClient();
 
-export async function POST(_req: Request, { params }: { params: { id: string } }) {
+export async function POST(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const { id } = await params;
+
   const perm = await requireApiPermission("ROOM_LOANS_MANAGE");
   if (!perm.ok) return perm.response;
 
-  const loanId = params.id;
-
   try {
     const loan = await prisma.room_loans.findUnique({
-      where: { id: loanId },
+      where: { id },
       include: { copies: true, users: true },
     });
 
@@ -25,7 +28,7 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
       return NextResponse.json(loan, { status: 200 });
     }
 
-    // Nur REQUESTED kann abgelehnt werden
+    // nur REQUESTED kann abgelehnt werden
     if (loan.status !== room_loans_status.REQUESTED) {
       return NextResponse.json(
         { error: "Ausleihe kann in diesem Status nicht abgelehnt werden." },
@@ -34,7 +37,7 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
     }
 
     const updated = await prisma.room_loans.update({
-      where: { id: loanId },
+      where: { id },
       data: { status: room_loans_status.REJECTED },
       include: {
         copies: { include: { titles: true } },
