@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Role } from "./types";
+import type { Role } from "@/lib/rbac/types";
 
 type WhoAmI = {
   ok: boolean;
