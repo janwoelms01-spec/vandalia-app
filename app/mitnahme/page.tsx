@@ -120,9 +120,9 @@ export default function LoansPage() {
       </div>
 
       <div className="flex gap-2 flex-wrap">
-        (role && can(role, "ROOM_LOANS_MANAGE") && (
+        {role && can(role, "ROOM_LOANS_MANAGE") && (
           <TabButton active={tab === "REQUESTED"} onClick={() => setTab("REQUESTED")}>Requests</TabButton>
-        ))}
+        )}
         <TabButton active={tab === "APPROVED"} onClick={() => setTab("APPROVED")}>Freigegeben</TabButton>
         <TabButton active={tab === "OUT"} onClick={() => setTab("OUT")}>Ausgeliehen</TabButton>
         <TabButton active={tab === "OVERDUE"} onClick={() => setTab("OVERDUE")}>Überfällig</TabButton>
