@@ -16,7 +16,7 @@ export async function POST(
   try {
     const result = await prisma.$transaction(async (tx) => {
       const loan = await tx.room_loans.findUnique({
-        where: { id: loanId },
+        where: { id: loan.id },
         include: { copies: true, users: true },
       });
 
