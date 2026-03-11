@@ -1,6 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-export type Role = "ADMIN" | "SCRIPTOR" | "ARCHIVAR" | "MEMBER" | "GENEALOGISTAR";
+export type Role = 'ADMIN'|'SENIOR'|'CONSENIOR'|'SCRIPTOR'|'ARCHIVAR'|'QUAESTOR'|'MEMBER'|'BEISITZER'|'GENEALOGISTAR'|'KV'|'DRUCK';
 
 export type SessionPayload = {
   sub: string;
