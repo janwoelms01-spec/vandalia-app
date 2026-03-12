@@ -4,7 +4,6 @@ import { verifySession, getSessionCookieName, Role } from "@/lib/auth";
 import { can } from "@/lib/rbac/permissions";
 import { publicUrl } from "@/lib/publicUrl";
 
-const STAFF: Role[] = ["ADMIN", "SCRIPTOR", "ARCHIVAR"];
 
 export async function proxy(req: NextRequest){
     const {pathname}=req.nextUrl;
@@ -72,6 +71,8 @@ export const config = {
     "/meldungen/:path*",
     "/mitnahme/:path*",
     "/export/:path*",
-    "/api/:path*"
+    "/api/:path*",
+    "/admin/:path*",
+    "/passwort-aendern/:path*"
   ],
 };
