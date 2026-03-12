@@ -14,7 +14,7 @@ export async function proxy(req: NextRequest){
         pathname.startsWith("/login") ||
         pathname.startsWith("/api/login") ||
         pathname.startsWith("/_next")||
-        pathname === "favicon.ico"
+        pathname === "/favicon.ico"
     ) {
         return NextResponse.next();
     }
@@ -31,17 +31,9 @@ export async function proxy(req: NextRequest){
     if(!token) return NextResponse.redirect(publicUrl("/login"))
 
     const session = await verifySession(token);
-  if (!session) {
-    return new NextResponse(
-      `JWT_VERIFY_FAILED. cookieName=${cookieName} tokenLen=${token.length}`,
-      { status: 401 }
-    );
+if (!session) {
+  return NextResponse.redirect(publicUrl("/login"));
 }
-    if (!session) {
-  return new NextResponse("Session invalid - check JWT_SECRET/cookie name", { status: 401 });
-}
-    if(!session) return NextResponse.redirect(publicUrl("/login"))
-
     if (
         session.mustChangePassword &&
         !pathname.startsWith("/passwort-aendern") &&
@@ -57,9 +49,9 @@ export async function proxy(req: NextRequest){
         pathname === "/" ||
         pathname.startsWith("/meldungen") ||
         pathname.startsWith("/mitnahme") ||
-        pathname.startsWith("api/issues") ||
-        pathname.startsWith("api/room.loans") ||
-        pathname.startsWith("api/logout") ||
+        pathname.startsWith("/api/issues") ||
+        pathname.startsWith("/api/room-loans") ||
+        pathname.startsWith("/api/logout") ||
         pathname.startsWith("/inventur") ||
         pathname.startsWith("/buecher");
 
@@ -68,6 +60,7 @@ export async function proxy(req: NextRequest){
     if(pathname.startsWith("/admin")){
         if (!can(session.role, "ADMIN_PANEL")) return NextResponse.redirect(publicUrl("/"));
     }
+    return NextResponse.next();
 }
 
 export const config = {
