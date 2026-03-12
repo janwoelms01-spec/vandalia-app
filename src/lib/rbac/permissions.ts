@@ -101,11 +101,9 @@ const FAMILY_TREE_OPERATIONS: Permission[] = [
         MEMBER: [...Member_OPERATIONS],
         GENEALOGISTAR: [...Member_OPERATIONS,],
         SENIOR: [...Member_OPERATIONS,],
-        CONSENIOR: [...Member_OPERATIONS,],
-        QUAESTOR: [...Member_OPERATIONS,],
-        BEISITZER: [...BACKUP_OPERATIONS,],
-        KV: [...BACKUP_OPERATIONS],
-        DRUCK: [...BACKUP_OPERATIONS]
+        KV: [...Member_OPERATIONS],
+        VORSTAND: [...Member_OPERATIONS],
+        DRUCK: [...Member_OPERATIONS]
 
 
     };
