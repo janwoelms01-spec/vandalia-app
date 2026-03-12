@@ -68,16 +68,6 @@ export async function proxy(req: NextRequest){
     if(pathname.startsWith("/admin")){
         if (!can(session.role, "ADMIN_PANEL")) return NextResponse.redirect(publicUrl("/"));
     }
-    if (
-        pathname.startsWith("/inventur")||
-        pathname.startsWith("/buecher") ||
-        pathname.startsWith("/export") ||
-        pathname.startsWith("api/admin") ||
-        pathname.startsWith("api/inventory")
-    ){
-        if (!STAFF.includes(session.role)) return NextResponse.redirect(publicUrl("/"));
-    }
-    return NextResponse.next();
 }
 
 export const config = {
